@@ -5,5 +5,3 @@ repository:
   description: This component is responsible for provisioning an Elasticsearch cluster with built-in integrations with Kibana and Logstash
   homepage: https://cloudposse.com/accelerate
   topics: terraform, terraform-component
-
-
