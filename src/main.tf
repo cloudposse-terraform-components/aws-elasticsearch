@@ -18,7 +18,7 @@ locals {
 
 module "elasticsearch" {
   source  = "cloudposse/elasticsearch/aws"
-  version = "1.0.1"
+  version = "1.2.0"
 
   security_groups                = [local.vpc_default_security_group]
   vpc_id                         = local.vpc_id
