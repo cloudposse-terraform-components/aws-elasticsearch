@@ -61,10 +61,10 @@ resource "random_password" "elasticsearch_password" {
   # character length
   length = 33
 
-  special  = true
-  upper    = true
-  lower    = true
-  numeric  = true
+  special = true
+  upper   = true
+  lower   = true
+  numeric = true
 
   min_special = 1
   min_upper   = 1
