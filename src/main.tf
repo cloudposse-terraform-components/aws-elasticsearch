@@ -57,13 +57,14 @@ module "elasticsearch" {
 }
 
 resource "random_password" "elasticsearch_password" {
+  count = local.create_password ? 1 : 0
   # character length
   length = 33
 
-  special = true
-  upper   = true
-  lower   = true
-  number  = true
+  special  = true
+  upper    = true
+  lower    = true
+  numeric  = true
 
   min_special = 1
   min_upper   = 1
@@ -101,7 +102,7 @@ resource "aws_ssm_parameter" "elasticsearch_kibana_endpoint" {
 
 module "elasticsearch_log_cleanup" {
   source  = "cloudposse/lambda-elasticsearch-cleanup/aws"
-  version = "0.14.1"
+  version = "0.16.1"
 
   es_endpoint          = module.elasticsearch.domain_endpoint
   es_domain_arn        = module.elasticsearch.domain_arn
