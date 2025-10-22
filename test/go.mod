@@ -32,7 +32,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/acm v1.30.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.51.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.44.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/docdb v1.40.10
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.37.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.202.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ecr v1.36.6 // indirect
@@ -86,23 +85,16 @@ require (
 	github.com/tmccombs/hcl2json v0.6.4 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/zclconf/go-cty v1.15.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 )
 
 require (
-	github.com/aws/aws-sdk-go-v2/service/amplify v1.28.8 // indirect
-	github.com/aws/aws-sdk-go-v2/service/backup v1.40.10 // indirect
-	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.47.4 // indirect
-	github.com/aws/aws-sdk-go-v2/service/efs v1.34.11 // indirect
-	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.43.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/kafka v1.38.16 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.41.5 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/lipgloss v0.10.0 // indirect
 	github.com/charmbracelet/log v0.4.0 // indirect
