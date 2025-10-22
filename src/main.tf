@@ -57,13 +57,14 @@ module "elasticsearch" {
 }
 
 resource "random_password" "elasticsearch_password" {
+  count = local.create_password ? 1 : 0
   # character length
   length = 33
 
   special = true
   upper   = true
   lower   = true
-  number  = true
+  numeric = true
 
   min_special = 1
   min_upper   = 1
