@@ -11,7 +11,7 @@ variable "instance_type" {
 variable "aws_service_type" {
   type        = string
   description = "The type of AWS service to deploy (`elasticsearch` or `opensearch`)."
-  # For backwards comptibility we default to elasticsearch
+  # For backwards compatibility we default to elasticsearch
   default = "elasticsearch"
 
   validation {
