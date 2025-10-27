@@ -56,11 +56,23 @@ module "elasticsearch" {
   context = module.this.context
 }
 
-resource "aws_opensearch_domain_saml_options" "this" {
-  count = local.saml_options_enabled ? 1 : 0
+resource "aws_elasticsearch_domain_saml_options" "elasticsearch" {
+  count = local.saml_options_enabled && var.aws_service_type == "elasticsearch" ? 1 : 0
 
   domain_name = module.elasticsearch.domain_name
+  saml_options {
+    enabled = var.elasticsearch_saml_options.enabled
+    idp {
+      entity_id        = var.elasticsearch_saml_options.entity_id
+      metadata_content = var.elasticsearch_saml_options.metadata_content
+    }
+  }
+}
 
+resource "aws_opensearch_domain_saml_options" "opensearch" {
+  count = local.saml_options_enabled && var.aws_service_type == "opensearch" ? 1 : 0
+
+  domain_name = module.elasticsearch.domain_name
   saml_options {
     enabled = var.elasticsearch_saml_options.enabled
     idp {
