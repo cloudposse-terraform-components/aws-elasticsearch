@@ -9,11 +9,10 @@ locals {
   elasticsearch_domain_endpoint = format(local.elasticsearch_endpoint_format, "elasticsearch_domain_endpoint")
   elasticsearch_kibana_endpoint = format(local.elasticsearch_endpoint_format, "elasticsearch_kibana_endpoint")
   elasticsearch_admin_password  = format(local.elasticsearch_endpoint_format, "password")
-}
 
-locals {
   create_password        = local.enabled && length(var.elasticsearch_password) == 0
-  elasticsearch_password = local.create_password ? join("", random_password.elasticsearch_password.*.result) : var.elasticsearch_password
+  elasticsearch_password = local.create_password ? one(random_password.elasticsearch_password[*].result) : var.elasticsearch_password
+  saml_options_enabled   = local.enabled && var.elasticsearch_saml_options.enabled
 }
 
 module "elasticsearch" {
@@ -25,6 +24,7 @@ module "elasticsearch" {
   subnet_ids                     = local.vpc_private_subnet_ids
   zone_awareness_enabled         = length(local.vpc_private_subnet_ids) > 1 ? true : false
   elasticsearch_version          = var.elasticsearch_version
+  aws_service_type               = var.aws_service_type
   instance_type                  = var.instance_type
   instance_count                 = length(local.vpc_private_subnet_ids)
   availability_zone_count        = length(local.vpc_private_subnet_ids)
@@ -54,6 +54,32 @@ module "elasticsearch" {
   }
 
   context = module.this.context
+}
+
+resource "aws_elasticsearch_domain_saml_options" "elasticsearch" {
+  count = local.saml_options_enabled && var.aws_service_type == "elasticsearch" ? 1 : 0
+
+  domain_name = module.elasticsearch.domain_name
+  saml_options {
+    enabled = var.elasticsearch_saml_options.enabled
+    idp {
+      entity_id        = var.elasticsearch_saml_options.entity_id
+      metadata_content = var.elasticsearch_saml_options.metadata_content
+    }
+  }
+}
+
+resource "aws_opensearch_domain_saml_options" "opensearch" {
+  count = local.saml_options_enabled && var.aws_service_type == "opensearch" ? 1 : 0
+
+  domain_name = module.elasticsearch.domain_name
+  saml_options {
+    enabled = var.elasticsearch_saml_options.enabled
+    idp {
+      entity_id        = var.elasticsearch_saml_options.entity_id
+      metadata_content = var.elasticsearch_saml_options.metadata_content
+    }
+  }
 }
 
 resource "random_password" "elasticsearch_password" {
@@ -103,6 +129,8 @@ resource "aws_ssm_parameter" "elasticsearch_kibana_endpoint" {
 module "elasticsearch_log_cleanup" {
   source  = "cloudposse/lambda-elasticsearch-cleanup/aws"
   version = "0.16.1"
+
+  enabled = var.elasticsearch_log_cleanup_enabled
 
   es_endpoint          = module.elasticsearch.domain_endpoint
   es_domain_arn        = module.elasticsearch.domain_arn
