@@ -8,9 +8,21 @@ variable "instance_type" {
   description = "The type of the instance"
 }
 
+variable "aws_service_type" {
+  type        = string
+  description = "The type of AWS service to deploy (`elasticsearch` or `opensearch`)."
+  # For backwards compatibility we default to elasticsearch
+  default = "elasticsearch"
+
+  validation {
+    condition     = contains(["elasticsearch", "opensearch"], var.aws_service_type)
+    error_message = "Value can only be one of `elasticsearch` or `opensearch`."
+  }
+}
+
 variable "elasticsearch_version" {
   type        = string
-  description = "Version of Elasticsearch to deploy (_e.g._ `7.1`, `6.8`, `6.7`, `6.5`, `6.4`, `6.3`, `6.2`, `6.0`, `5.6`, `5.5`, `5.3`, `5.1`, `2.3`, `1.5`"
+  description = "Version of Elasticsearch or Opensearch to deploy (_e.g._ `7.1`, `6.8`, `6.7`, `6.5`, `6.4`, `6.3`, `6.2`, `6.0`, `5.6`, `5.5`, `5.3`, `5.1`, `2.3`, `1.5`"
 }
 
 variable "encrypt_at_rest_enabled" {
@@ -98,6 +110,28 @@ variable "elasticsearch_password" {
     )
     error_message = "Password must be between 8 and 128 characters. If null is provided then a random password will be used."
   }
+}
+
+variable "elasticsearch_saml_options" {
+  type = object({
+    enabled          = optional(bool, false)
+    entity_id        = optional(string)
+    metadata_content = optional(string)
+  })
+  description = <<-EOT
+ Manages SAML authentication options for an AWS OpenSearch Domain
+
+ enabled: Whether to enable SAML authentication for the OpenSearch Domain
+ entity_id: The entity ID of the IdP
+ metadata_content: The metadata of the IdP
+ EOT
+  default     = {}
+}
+
+variable "elasticsearch_log_cleanup_enabled" {
+  type        = bool
+  description = "Whether to enable Elasticsearch log cleanup Lambda"
+  default     = true
 }
 
 variable "dns_delegated_environment_name" {
