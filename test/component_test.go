@@ -9,6 +9,7 @@ import (
 	// "github.com/aws/aws-sdk-go-v2/service/docdb"
 	"github.com/cloudposse/test-helpers/pkg/atmos"
 	helper "github.com/cloudposse/test-helpers/pkg/atmos/component-helper"
+
 	// awshelper "github.com/cloudposse/test-helpers/pkg/aws"
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -49,7 +50,7 @@ func (s *ComponentSuite) TestBasic() {
 	assert.True(s.T(), strings.HasPrefix(kibanaEndpoint, "vpc-eg-default-ue2-test-e-"))
 
 	domainHostname := atmos.Output(s.T(), options, "domain_hostname")
-	assert.True(s.T(), strings.HasPrefix(domainHostname, "eg-default-ue2-test-e-"))
+	assert.True(s.T(), strings.HasPrefix(domainHostname, "es.") && strings.HasSuffix(domainHostname, ".components.cptest.test-automation.app"))
 
 	kibanaHostname := atmos.Output(s.T(), options, "kibana_hostname")
 	assert.True(s.T(), strings.HasSuffix(kibanaHostname, "components.cptest.test-automation.app"))
@@ -73,7 +74,6 @@ func (s *ComponentSuite) TestBasic() {
 
 // 	s.VerifyEnabledFlag(component, stack, nil)
 // }
-
 
 func TestRunSuite(t *testing.T) {
 	suite := new(ComponentSuite)
