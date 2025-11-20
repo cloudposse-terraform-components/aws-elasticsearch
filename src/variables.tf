@@ -25,9 +25,55 @@ variable "elasticsearch_version" {
   description = "Version of Elasticsearch or Opensearch to deploy (_e.g._ `7.1`, `6.8`, `6.7`, `6.5`, `6.4`, `6.3`, `6.2`, `6.0`, `5.6`, `5.5`, `5.3`, `5.1`, `2.3`, `1.5`"
 }
 
+variable "elasticsearch_domain_name" {
+  type        = string
+  default     = ""
+  description = "The name of the Elasticsearch domain. Must be at least 3 and no more than 28 characters long. Valid characters are a-z (lowercase letters), 0-9, and - (hyphen)."
+
+  validation {
+    condition     = var.elasticsearch_domain_name == "" || (length(var.elasticsearch_domain_name) >= 3 && length(var.elasticsearch_domain_name) <= 28)
+    error_message = "The elasticsearch_domain_name must meet following conditions: 1) be empty string or 2) must start with a lowercase alphabet and be at least 3 and no more than 28 characters long. Valid characters are a-z (lowercase letters), 0-9, and - (hyphen)."
+  }
+
+  validation {
+    condition     = var.elasticsearch_domain_name == "" || can(regex("^[a-z][a-z0-9-]*$", var.elasticsearch_domain_name))
+    error_message = "The elasticsearch_domain_name must meet following conditions: 1) be empty string or 2) must start with a lowercase alphabet and be at least 3 and no more than 28 characters long. Valid characters are a-z (lowercase letters), 0-9, and - (hyphen)."
+  }
+}
+
 variable "encrypt_at_rest_enabled" {
   type        = bool
   description = "Whether to enable encryption at rest"
+}
+
+variable "node_to_node_encryption_enabled" {
+  type        = bool
+  description = "Whether to enable node-to-node encryption"
+  default     = true
+}
+
+variable "advanced_security_options_enabled" {
+  type        = bool
+  description = "AWS Elasticsearch Kibana enhanced security plugin enabling (forces new resource)"
+  default     = true
+}
+
+variable "advanced_security_options_anonymous_auth_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether Anonymous auth is enabled. Enables fine-grained access control on an existing domain"
+}
+
+variable "advanced_security_options_internal_user_database_enabled" {
+  type        = bool
+  description = "Whether to enable or not internal Kibana user database for ELK OpenDistro security plugin"
+  default     = true
+}
+
+variable "advanced_security_options_master_user_name" {
+  type        = string
+  description = "Master user username (applicable if advanced_security_options_internal_user_database_enabled set to true)"
+  default     = "admin"
 }
 
 variable "dedicated_master_enabled" {
@@ -55,6 +101,7 @@ variable "elasticsearch_subdomain_name" {
 variable "kibana_subdomain_name" {
   type        = string
   description = "The name of the subdomain for Kibana in the DNS zone (_e.g._ `kibana`, `ui`, `ui-es`, `search-ui`, `kibana.elasticsearch`)"
+  default     = null
 }
 
 variable "create_iam_service_linked_role" {
@@ -69,6 +116,12 @@ variable "create_iam_service_linked_role" {
 variable "ebs_volume_size" {
   type        = number
   description = "EBS volumes for data storage in GB"
+}
+
+variable "cold_storage_enabled" {
+  type        = bool
+  description = "Enables cold storage support."
+  default     = false
 }
 
 variable "domain_hostname_enabled" {

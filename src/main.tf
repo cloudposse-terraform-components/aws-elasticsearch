@@ -9,6 +9,8 @@ locals {
   elasticsearch_domain_endpoint = format(local.elasticsearch_endpoint_format, "elasticsearch_domain_endpoint")
   elasticsearch_kibana_endpoint = format(local.elasticsearch_endpoint_format, "elasticsearch_kibana_endpoint")
   elasticsearch_admin_password  = format(local.elasticsearch_endpoint_format, "password")
+  kibana_subdomain_name         = coalesce(var.kibana_subdomain_name, module.this.environment)
+  elasticsearch_subdomain_name  = coalesce(var.elasticsearch_subdomain_name, module.this.environment)
 
   create_password        = local.enabled && length(var.elasticsearch_password) == 0
   elasticsearch_password = local.create_password ? one(random_password.elasticsearch_password[*].result) : var.elasticsearch_password
@@ -33,18 +35,22 @@ module "elasticsearch" {
   dedicated_master_count         = var.dedicated_master_enabled ? var.dedicated_master_count : null
   dedicated_master_type          = var.dedicated_master_enabled ? var.dedicated_master_type : null
   create_iam_service_linked_role = var.create_iam_service_linked_role
-  kibana_subdomain_name          = module.this.environment
+  elasticsearch_domain_name      = var.elasticsearch_domain_name
+  elasticsearch_subdomain_name   = local.elasticsearch_subdomain_name
+  kibana_subdomain_name          = local.kibana_subdomain_name
   ebs_volume_size                = var.ebs_volume_size
+  cold_storage_enabled           = var.cold_storage_enabled
   dns_zone_id                    = local.dns_zone_id
   kibana_hostname_enabled        = var.kibana_hostname_enabled
   domain_hostname_enabled        = var.domain_hostname_enabled
   iam_role_arns                  = var.elasticsearch_iam_role_arns
   iam_actions                    = var.elasticsearch_iam_actions
 
-  node_to_node_encryption_enabled                          = true
-  advanced_security_options_enabled                        = true
-  advanced_security_options_internal_user_database_enabled = true
-  advanced_security_options_master_user_name               = "admin"
+  node_to_node_encryption_enabled                          = var.node_to_node_encryption_enabled
+  advanced_security_options_enabled                        = var.advanced_security_options_enabled
+  advanced_security_options_anonymous_auth_enabled         = var.advanced_security_options_anonymous_auth_enabled
+  advanced_security_options_internal_user_database_enabled = var.advanced_security_options_internal_user_database_enabled
+  advanced_security_options_master_user_name               = var.advanced_security_options_master_user_name
   advanced_security_options_master_user_password           = local.elasticsearch_password
 
   allowed_cidr_blocks = [module.vpc.outputs.vpc_cidr]
